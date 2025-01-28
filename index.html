@@ -66,6 +66,50 @@
   <script>
     "use strict";
     // Код писать здесь
+    const userNameComment = document.querySelector('.add-form-name'); 
+    const userTextComment = document.querySelector('.add-form-text');
+    const userButtonComment = document.querySelector('.add-form-button');
+    const otherComments = document.querySelector('.comments'); 
+    
+    userButtonComment.addEventListener('click', () => {
+      userNameComment.classList.remove('error');
+      userTextComment.classList.remove('error');
+      
+      if (userNameComment.value === '' || userTextComment.value === '') {
+         userNameComment.classList.add('error');
+         userTextComment.classList.add('error');
+         return; 
+      }
+      
+      const oldComments = otherComments.innerHTML; 
+      const currentDate = new Date(); 
+      const optionDate = {day: 'numeric', month: 'numeric'};
+      const fullYear = currentDate.getFullYear();
+      const lastTwoDigitsYear = fullYear % 100;
+      const optionTime = {hour: '2-digit', minute:'2-digit'};
+      const userDate = currentDate.toLocaleDateString('ru-RU', optionDate) + `.${lastTwoDigitsYear}`;
+      const userTime = currentDate.toLocaleTimeString('ru-RU', optionTime);
+
+       otherComments.innerHTML = oldComments + `<li class="comment">
+        <div class="comment-header">
+          <div>${userNameComment.value}</div>
+          <div>${userDate} ${userTime}</div>
+        </div>
+        <div class="comment-body">
+          <div class="comment-text">${userTextComment.value}</div>
+        </div>
+        <div class="comment-footer">
+          <div class="likes">
+            <span class="likes-counter">0</span>
+            <button class="like-button"></button>
+          </div>
+        </div>
+        </li>`;
+
+      userNameComment.value = '';
+      userTextComment.value = '';
+    }); 
+
     console.log("It works!");
   </script>
 </html>
