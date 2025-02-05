@@ -75,10 +75,24 @@
       userNameComment.classList.remove('error');
       userTextComment.classList.remove('error');
       
-      if (userNameComment.value === '' || userTextComment.value === '') {
+      if (userNameComment.value === '' && userTextComment.value === '') {
          userNameComment.classList.add('error');
          userTextComment.classList.add('error');
          return; 
+        } 
+      
+      if (userNameComment.value === '' ) {
+        userNameComment.classList.add('error');
+        return;
+      } else {
+        userNameComment.classList.remove('error');
+      }
+
+      if (userTextComment.value === '') {
+         userTextComment.classList.add('error');
+         return; 
+      } else {
+        userTextComment.classList.remove('error');
       }
       
       const oldComments = otherComments.innerHTML; 
@@ -90,7 +104,7 @@
       const userDate = currentDate.toLocaleDateString('ru-RU', optionDate) + `.${lastTwoDigitsYear}`;
       const userTime = currentDate.toLocaleTimeString('ru-RU', optionTime);
 
-       otherComments.innerHTML = oldComments + `<li class="comment">
+       otherComments.innerHTML += `<li class="comment">
         <div class="comment-header">
           <div>${userNameComment.value}</div>
           <div>${userDate} ${userTime}</div>
