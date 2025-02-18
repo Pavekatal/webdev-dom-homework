@@ -183,12 +183,12 @@
       }
 
       comments.push({
-                author: userNameComment.value, 
+                author: userNameComment.value.replaceAll('<', '&lt;').replaceAll('>', '&gt;'), 
                 date: useringDate,
-                text: userTextComment.value, 
+                text: userTextComment.value.replaceAll('<', '&lt;').replaceAll('>', '&gt;'), 
                 likesCounter: 0,
                 isLike: false 
-      });
+              });
       
       renderComments();
 
