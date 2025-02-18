@@ -78,18 +78,17 @@
     const optionTime = {hour: '2-digit', minute:'2-digit'};
     const userDate = currentDate.toLocaleDateString('ru-RU', optionDate) + `.${lastTwoDigitsYear}`;
     const userTime = currentDate.toLocaleTimeString('ru-RU', optionTime);
+    const useringDate = `${userDate} ${userTime}`;
 
     const comments = [
         { author: 'Глеб Фокин', 
-          date: '12.02.22',
-          time: '12:18',
+          date: '12.02.22 12:18',
           text: 'Это будет первый комментарий на этой странице', 
           likesCounter: 3,
           isLike: false 
         },
         { author: 'Варвара Н.', 
-          date: '13.02.22',
-          time: '19:22',
+          date: '13.02.22 19:22',
           text: 'Мне нравится как оформлена эта страница! ❤', 
           likesCounter: 75,
           isLike: true 
@@ -123,7 +122,7 @@
         return `<li class="comment">
           <div class="comment-header">
             <div>${comment.author}</div>
-            <div>${comment.date} ${comment.time}</div>
+            <div>${comment.date}</div>
           </div>
           <div class="comment-body">
             <div class="comment-text">${comment.text}</div>
@@ -170,8 +169,7 @@
 
       comments.push({
                 author: userNameComment.value, 
-                date: userDate,
-                time: userTime,
+                date: useringDate,
                 text: userTextComment.value, 
                 likesCounter: 0,
                 isLike: false 
