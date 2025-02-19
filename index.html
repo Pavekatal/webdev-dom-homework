@@ -69,8 +69,7 @@
     const userNameComment = document.querySelector('.add-form-name'); 
     const userTextComment = document.querySelector('.add-form-text');
     const userButtonComment = document.querySelector('.add-form-button');
-    const otherComments = document.querySelector('.comments'); 
-    const oldComments = otherComments.innerHTML; 
+    const otherComments = document.querySelector('.comments');
     const currentDate = new Date(); 
     const optionDate = {day: 'numeric', month: 'numeric'};
     const fullYear = currentDate.getFullYear();
@@ -79,22 +78,27 @@
     const userDate = currentDate.toLocaleDateString('ru-RU', optionDate) + `.${lastTwoDigitsYear}`;
     const userTime = currentDate.toLocaleTimeString('ru-RU', optionTime);
     const useringDate = `${userDate} ${userTime}`;
+    const commentsContainer = document.createElement('div'); 
+    commentsContainer.id = 'commentsContainer'; 
+    otherComments.appendChild(commentsContainer); 
 
     const comments = [
         { author: 'Глеб Фокин', 
           date: '12.02.22 12:18',
           text: 'Это будет первый комментарий на этой странице', 
           likesCounter: 3,
-          isLike: false 
+          isLike: false,
+          replies: [] 
         },
         { author: 'Варвара Н.', 
           date: '13.02.22 19:22',
           text: 'Мне нравится как оформлена эта страница! ❤', 
           likesCounter: 75,
-          isLike: true 
+          isLike: true,
+          replies: [] 
         } 
     ];
-    
+ 
     const initLikesComments = () => {
       const likesButtons = document.querySelectorAll('.like-button'); 
       const likeCountEls = document.querySelectorAll('.likes-counter');
@@ -114,24 +118,30 @@
       });
     };
 
+    let currentCommentToReply = null; 
+
     const initRepliesComments = () => {
       const repliesComments = document.querySelectorAll('.comment'); 
 
-      for (const replyComment of repliesComments) {
-        replyComment.addEventListener('click', () => {
+      repliesComments.forEach(replyComment => {
+        replyComment.addEventListener('click', () => {          
           const indexComment = +replyComment.dataset.commentIndex;
-          const commentToReply = comments[indexComment]; 
-          userTextComment.value = `${commentToReply.author}: "${commentToReply.text}": `;
+          currentCommentToReply = comments[indexComment]; 
+          userTextComment.value = `> ${currentCommentToReply.author}: "${currentCommentToReply.text}":  `;
 
-          renderComments(); 
+          // renderComments(); 
         });
-      }; 
+      }); 
     }
 
     const renderComments = () => {
-      const commentHTML = comments.map((comment, index) => {
+      commentsContainer.innerHTML = ''; 
 
-        const likeButtonClass = comment.isLike ? 'like-button -active-like' : 'like-button'; 
+      const commentHTML = comments.map((comment, index) => {
+        const likeButtonClass = comment.isLike ? 'like-button -active-like' : 'like-button';  
+
+        const quoteHTML = comment.quote ?
+            `<blockquote>${comment.quote.author}: "${comment.quote.text}"</blockquote>` : ''; 
 
         return `<li class="comment" data-comment-index="${index}">
           <div class="comment-header">
@@ -139,7 +149,7 @@
             <div>${comment.date}</div>
           </div>
           <div class="comment-body">
-            <div class="comment-text">${comment.text}</div>
+            <div class="comment-text">${quoteHTML}${comment.text}</div>
           </div>
           <div class="comment-footer">
             <div class="likes">
@@ -147,16 +157,27 @@
               <button class="${likeButtonClass}" data-index="${index}"></button>
             </div>
           </div>
-          </li>`;
+        </li>`;
       }).join(''); 
 
       otherComments.innerHTML = commentHTML;
+      // commentsContainer.innerHTML = commentHTML;
 
       initLikesComments(); 
       initRepliesComments(); 
     };
 
     renderComments(); 
+
+    const clearingHtml = (str) => {
+      return str
+      .replaceAll('<', '')
+      .replaceAll('>', '')
+      .replaceAll('&', '')
+      .replaceAll('"', '')
+      .replaceAll("'", '')
+      .replaceAll('/', '')
+    };
     
     userButtonComment.addEventListener('click', () => {
       userNameComment.classList.remove('error');
@@ -182,34 +203,39 @@
         userTextComment.classList.remove('error');
       }
 
-      comments.push({
-                author: userNameComment.value.replaceAll('<', '&lt;').replaceAll('>', '&gt;'), 
-                date: useringDate,
-                text: userTextComment.value.replaceAll('<', '&lt;').replaceAll('>', '&gt;'), 
-                likesCounter: 0,
-                isLike: false 
-              });
-      
-      renderComments();
+      const cleanedName = clearingHtml(userNameComment.value); 
+      const cleanedText = clearingHtml(userTextComment.value);
 
-      //   otherComments.innerHTML += `<li class="comment">
-      //     <div class="comment-header">
-      //       <div>${userNameComment.value}</div>
-      //       <div>${userDate} ${userTime}</div>
-      //     </div>
-      //     <div class="comment-body">
-      //       <div class="comment-text">${userTextComment.value}</div>
-      //     </div>
-      //     <div class="comment-footer">
-      //       <div class="likes">
-      //         <span class="likes-counter">0</span>
-      //         <button class="like-button"></button>
-      //       </div>
-      //     </div>
-      //     </li>`;
+      if (currentCommentToReply) {
+        comments.push({
+                author: cleanedName, 
+                date: useringDate,
+                text: cleanedText, 
+                quote: {
+                  author: currentCommentToReply.author,
+                  text: currentCommentToReply.text
+                },
+                likesCounter: 0,
+                isLike: false,
+                replies: [],
+                
+              }); 
+      } else {
+        comments.push({
+                author: cleanedName, 
+                date: useringDate,
+                text: cleanedText, 
+                likesCounter: 0,
+                isLike: false,
+                replies: [] 
+              });
+      }
+
+      renderComments();
 
       userNameComment.value = '';
       userTextComment.value = '';
+      currentCommentToReply = null; 
     }); 
     
     console.log("It works!");
