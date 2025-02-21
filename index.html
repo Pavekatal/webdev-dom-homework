@@ -108,10 +108,13 @@
           comment.isLike = !comment.isLike;
           comment.isLike ? comment.likesCounter++ : comment.likesCounter--; 
           likeCountEls[index].textContent = comment.likesCounter; 
+
           renderComments();
         });
       });
     };
+
+    let currentCommentToReply = null; 
 
     const initRepliesComments = () => {
       const repliesComments = document.querySelectorAll('.comment'); 
@@ -119,9 +122,9 @@
       for (const replyComment of repliesComments) {
         replyComment.addEventListener('click', () => {   
           const indexComment = +replyComment.dataset.commentIndex;
-          const currentCommentToReply = comments[indexComment]; 
+          currentCommentToReply = comments[indexComment]; 
           userTextComment.value = `> ${currentCommentToReply.author}: "${currentCommentToReply.text}":\n  `;
-     
+          userTextComment.focus();
         });
       }
     };
@@ -157,8 +160,6 @@
       initRepliesComments(); 
     };
 
-    renderComments();
-
     const clearingHtml = (str) => {
       return str
       .replaceAll('<', '')
@@ -192,18 +193,24 @@
       }
 
       const cleanedName = clearingHtml(userNameComment.value); 
-      const cleanedText = clearingHtml(userTextComment.value).replace(/\n/g, '<br>');
+      const cleanedText = clearingHtml(userTextComment.value.replace(/^\s*>.*(?:\n|$)/gm, '').trim());
+
         comments.push({
           author: cleanedName, 
           date: useringDate,
           text: cleanedText, 
           likesCounter: 0,
           isLike: false,
+          quote: currentCommentToReply ? {
+                        author: currentCommentToReply.author,
+                        text: currentCommentToReply.text
+                 } : null 
         });
 
       renderComments();
       userNameComment.value = '';
       userTextComment.value = '';
+      currentCommentToReply = null; 
     }); 
 
     renderComments(); 
