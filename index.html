@@ -81,21 +81,19 @@
     const commentsContainer = document.createElement('div'); 
     commentsContainer.id = 'commentsContainer'; 
     otherComments.appendChild(commentsContainer); 
-
+   
     const comments = [
         { author: 'Глеб Фокин', 
           date: '12.02.22 12:18',
           text: 'Это будет первый комментарий на этой странице', 
           likesCounter: 3,
           isLike: false,
-          replies: [] 
         },
         { author: 'Варвара Н.', 
           date: '13.02.22 19:22',
           text: 'Мне нравится как оформлена эта страница! ❤', 
           likesCounter: 75,
           isLike: true,
-          replies: [] 
         } 
     ];
  
@@ -106,42 +104,36 @@
       likesButtons.forEach((likeButton, index) => {
         likeButton.addEventListener('click', (event) => {
           event.stopPropagation();
-
           const comment = comments[index];
-
           comment.isLike = !comment.isLike;
           comment.isLike ? comment.likesCounter++ : comment.likesCounter--; 
           likeCountEls[index].textContent = comment.likesCounter; 
-
           renderComments();
         });
       });
     };
 
-    let currentCommentToReply = null; 
-
     const initRepliesComments = () => {
       const repliesComments = document.querySelectorAll('.comment'); 
 
-      repliesComments.forEach(replyComment => {
-        replyComment.addEventListener('click', () => {          
+      for (const replyComment of repliesComments) {
+        replyComment.addEventListener('click', () => {   
           const indexComment = +replyComment.dataset.commentIndex;
-          currentCommentToReply = comments[indexComment]; 
-          userTextComment.value = `> ${currentCommentToReply.author}: "${currentCommentToReply.text}":  `;
-
-          // renderComments(); 
+          const currentCommentToReply = comments[indexComment]; 
+          userTextComment.value = `> ${currentCommentToReply.author}: "${currentCommentToReply.text}":\n  `;
+     
         });
-      }); 
-    }
+      }
+    };
 
     const renderComments = () => {
-      commentsContainer.innerHTML = ''; 
+      commentsContainer.innerHTML = '';
 
       const commentHTML = comments.map((comment, index) => {
         const likeButtonClass = comment.isLike ? 'like-button -active-like' : 'like-button';  
 
         const quoteHTML = comment.quote ?
-            `<blockquote>${comment.quote.author}: "${comment.quote.text}"</blockquote>` : ''; 
+            `<div class="reply">${comment.quote.author}: "${comment.quote.text}"</div> ` : ''; 
 
         return `<li class="comment" data-comment-index="${index}">
           <div class="comment-header">
@@ -161,13 +153,11 @@
       }).join(''); 
 
       otherComments.innerHTML = commentHTML;
-      // commentsContainer.innerHTML = commentHTML;
-
       initLikesComments(); 
       initRepliesComments(); 
     };
 
-    renderComments(); 
+    renderComments();
 
     const clearingHtml = (str) => {
       return str
@@ -188,14 +178,12 @@
         userTextComment.classList.add('error');
         return; 
       } 
-        
       if (userNameComment.value === '' ) {
         userNameComment.classList.add('error');
         return;
       } else {
         userNameComment.classList.remove('error');
       }
-
       if (userTextComment.value === '') {
         userTextComment.classList.add('error');
         return; 
@@ -204,39 +192,21 @@
       }
 
       const cleanedName = clearingHtml(userNameComment.value); 
-      const cleanedText = clearingHtml(userTextComment.value);
-
-      if (currentCommentToReply) {
+      const cleanedText = clearingHtml(userTextComment.value).replace(/\n/g, '<br>');
         comments.push({
-                author: cleanedName, 
-                date: useringDate,
-                text: cleanedText, 
-                quote: {
-                  author: currentCommentToReply.author,
-                  text: currentCommentToReply.text
-                },
-                likesCounter: 0,
-                isLike: false,
-                replies: [],
-                
-              }); 
-      } else {
-        comments.push({
-                author: cleanedName, 
-                date: useringDate,
-                text: cleanedText, 
-                likesCounter: 0,
-                isLike: false,
-                replies: [] 
-              });
-      }
+          author: cleanedName, 
+          date: useringDate,
+          text: cleanedText, 
+          likesCounter: 0,
+          isLike: false,
+        });
 
       renderComments();
-
       userNameComment.value = '';
       userTextComment.value = '';
-      currentCommentToReply = null; 
     }); 
+
+    renderComments(); 
     
     console.log("It works!");
   </script>

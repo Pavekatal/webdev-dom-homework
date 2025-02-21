@@ -141,7 +141,12 @@ body {
   }
 
   .reply {
-    color: gray; 
-    font-size: 18px; 
+    margin: 10px 0;
+    padding: 10px;
+    border-left: 5px solid #d1c0c0;
+    border-radius: 5px;
     font-style: italic;
+    background-color: #9668c752;
+    color: #d1c0c0;
+    font-size: 24px;
   }
