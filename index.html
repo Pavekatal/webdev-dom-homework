@@ -66,63 +66,72 @@
   <script>
     "use strict";
     // Код писать здесь
-    const userNameComment = document.querySelector('.add-form-name'); 
-    const userTextComment = document.querySelector('.add-form-text');
-    const userButtonComment = document.querySelector('.add-form-button');
-    const otherComments = document.querySelector('.comments');
-    const currentDate = new Date(); 
-    const optionDate = {day: 'numeric', month: 'numeric'};
-    const fullYear = currentDate.getFullYear();
-    const lastTwoDigitsYear = fullYear % 100;
-    const optionTime = {hour: '2-digit', minute:'2-digit'};
-    const userDate = currentDate.toLocaleDateString('ru-RU', optionDate) + `.${lastTwoDigitsYear}`;
-    const userTime = currentDate.toLocaleTimeString('ru-RU', optionTime);
-    const useringDate = `${userDate} ${userTime}`;
-    const commentsContainer = document.createElement('div'); 
-    commentsContainer.id = 'commentsContainer'; 
-    otherComments.appendChild(commentsContainer); 
-   
+    const userNameComment = document.querySelector(".add-form-name");
+    const userTextComment = document.querySelector(".add-form-text");
+    const userButtonComment = document.querySelector(".add-form-button");
+    const otherComments = document.querySelector(".comments");
+    const commentsContainer = document.createElement("div");
+    commentsContainer.id = "commentsContainer";
+    otherComments.appendChild(commentsContainer);
+
+    const formattedDate = () => {
+      const currentDate = new Date();
+      const optionDate = { day: "numeric", month: "numeric" };
+      const fullYear = currentDate.getFullYear();
+      const lastTwoDigitsYear = fullYear % 100;
+      const optionTime = { hour: "2-digit", minute: "2-digit" };
+      const userDate =
+        currentDate.toLocaleDateString("ru-RU", optionDate) +
+        `.${lastTwoDigitsYear}`;
+      const userTime = currentDate.toLocaleTimeString("ru-RU", optionTime);
+      const useringDate = `${userDate} ${userTime}`;
+
+      return useringDate;
+    };
+
     const comments = [
-        { author: 'Глеб Фокин', 
-          date: '12.02.22 12:18',
-          text: 'Это будет первый комментарий на этой странице', 
-          likesCounter: 3,
-          isLike: false,
-        },
-        { author: 'Варвара Н.', 
-          date: '13.02.22 19:22',
-          text: 'Мне нравится как оформлена эта страница! ❤', 
-          likesCounter: 75,
-          isLike: true,
-        } 
+      {
+        author: "Глеб Фокин",
+        date: "12.02.22 12:18",
+        text: "Это будет первый комментарий на этой странице",
+        likesCounter: 3,
+        isLike: false,
+      },
+      {
+        author: "Варвара Н.",
+        date: "13.02.22 19:22",
+        text: "Мне нравится как оформлена эта страница! ❤",
+        likesCounter: 75,
+        isLike: true,
+      },
     ];
- 
+
     const initLikesComments = () => {
-      const likesButtons = document.querySelectorAll('.like-button'); 
-      const likeCountEls = document.querySelectorAll('.likes-counter');
+      const likesButtons = document.querySelectorAll(".like-button");
+      const likeCountEls = document.querySelectorAll(".likes-counter");
 
       likesButtons.forEach((likeButton, index) => {
-        likeButton.addEventListener('click', (event) => {
+        likeButton.addEventListener("click", (event) => {
           event.stopPropagation();
           const comment = comments[index];
           comment.isLike = !comment.isLike;
-          comment.isLike ? comment.likesCounter++ : comment.likesCounter--; 
-          likeCountEls[index].textContent = comment.likesCounter; 
+          comment.isLike ? comment.likesCounter++ : comment.likesCounter--;
+          likeCountEls[index].textContent = comment.likesCounter;
 
           renderComments();
         });
       });
     };
 
-    let currentCommentToReply = null; 
+    let currentCommentToReply = null;
 
     const initRepliesComments = () => {
-      const repliesComments = document.querySelectorAll('.comment'); 
+      const repliesComments = document.querySelectorAll(".comment");
 
       for (const replyComment of repliesComments) {
-        replyComment.addEventListener('click', () => {   
+        replyComment.addEventListener("click", () => {
           const indexComment = +replyComment.dataset.commentIndex;
-          currentCommentToReply = comments[indexComment]; 
+          currentCommentToReply = comments[indexComment];
           userTextComment.value = `> ${currentCommentToReply.author}: "${currentCommentToReply.text}":\n  `;
           userTextComment.focus();
         });
@@ -130,15 +139,19 @@
     };
 
     const renderComments = () => {
-      commentsContainer.innerHTML = '';
+      commentsContainer.innerHTML = "";
 
-      const commentHTML = comments.map((comment, index) => {
-        const likeButtonClass = comment.isLike ? 'like-button -active-like' : 'like-button';  
+      const commentHTML = comments
+        .map((comment, index) => {
+          const likeButtonClass = comment.isLike
+            ? "like-button -active-like"
+            : "like-button";
 
-        const quoteHTML = comment.quote ?
-            `<div class="reply">${comment.quote.author}: "${comment.quote.text}"</div> ` : ''; 
+          const quoteHTML = comment.quote
+            ? `<div class="reply">${comment.quote.author}: "${comment.quote.text}"</div> `
+            : "";
 
-        return `<li class="comment" data-comment-index="${index}">
+          return `<li class="comment" data-comment-index="${index}">
           <div class="comment-header">
             <div>${comment.author}</div>
             <div>${comment.date}</div>
@@ -153,68 +166,73 @@
             </div>
           </div>
         </li>`;
-      }).join(''); 
+        })
+        .join("");
 
       otherComments.innerHTML = commentHTML;
-      initLikesComments(); 
-      initRepliesComments(); 
+      initLikesComments();
+      initRepliesComments();
     };
 
     const clearingHtml = (str) => {
       return str
-      .replaceAll('<', '')
-      .replaceAll('>', '')
-      .replaceAll('&', '')
-      .replaceAll('"', '')
-      .replaceAll("'", '')
-      .replaceAll('/', '')
+        .replaceAll("<", "")
+        .replaceAll(">", "")
+        .replaceAll("&", "")
+        .replaceAll('"', "")
+        .replaceAll("'", "")
+        .replaceAll("/", "");
     };
-    
-    userButtonComment.addEventListener('click', () => {
-      userNameComment.classList.remove('error');
-      userTextComment.classList.remove('error');
-        
-      if (userNameComment.value === '' && userTextComment.value === '') {
-        userNameComment.classList.add('error');
-        userTextComment.classList.add('error');
-        return; 
-      } 
-      if (userNameComment.value === '' ) {
-        userNameComment.classList.add('error');
+
+    userButtonComment.addEventListener("click", () => {
+      userNameComment.classList.remove("error");
+      userTextComment.classList.remove("error");
+
+      if (userNameComment.value === "" && userTextComment.value === "") {
+        userNameComment.classList.add("error");
+        userTextComment.classList.add("error");
+        return;
+      }
+      if (userNameComment.value === "") {
+        userNameComment.classList.add("error");
         return;
       } else {
-        userNameComment.classList.remove('error');
+        userNameComment.classList.remove("error");
       }
-      if (userTextComment.value === '') {
-        userTextComment.classList.add('error');
-        return; 
+      if (userTextComment.value === "") {
+        userTextComment.classList.add("error");
+        return;
       } else {
-        userTextComment.classList.remove('error');
+        userTextComment.classList.remove("error");
       }
 
-      const cleanedName = clearingHtml(userNameComment.value); 
-      const cleanedText = clearingHtml(userTextComment.value.replace(/^\s*>.*(?:\n|$)/gm, '').trim());
+      const cleanedName = clearingHtml(userNameComment.value);
+      const cleanedText = clearingHtml(
+        userTextComment.value.replace(/^\s*>.*(?:\n|$)/gm, "").trim()
+      );
 
-        comments.push({
-          author: cleanedName, 
-          date: useringDate,
-          text: cleanedText, 
-          likesCounter: 0,
-          isLike: false,
-          quote: currentCommentToReply ? {
-                        author: currentCommentToReply.author,
-                        text: currentCommentToReply.text
-                 } : null 
-        });
+      comments.push({
+        author: cleanedName,
+        date: formattedDate(),
+        text: cleanedText,
+        likesCounter: 0,
+        isLike: false,
+        quote: currentCommentToReply
+          ? {
+              author: currentCommentToReply.author,
+              text: currentCommentToReply.text,
+            }
+          : null,
+      });
 
       renderComments();
-      userNameComment.value = '';
-      userTextComment.value = '';
-      currentCommentToReply = null; 
-    }); 
+      userNameComment.value = "";
+      userTextComment.value = "";
+      currentCommentToReply = null;
+    });
 
-    renderComments(); 
-    
+    renderComments();
+
     console.log("It works!");
   </script>
 </html>
