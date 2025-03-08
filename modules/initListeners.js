@@ -10,9 +10,9 @@ export const initLikesComments = (renderComments) => {
         likeButton.addEventListener('click', (event) => {
             event.stopPropagation()
             const comment = comments[index]
-            comment.isLike = !comment.isLike
-            comment.isLike ? comment.likesCounter++ : comment.likesCounter--
-            likeCountEls[index].textContent = comment.likesCounter
+            comment.isLiked = !comment.isLiked
+            comment.isLiked ? comment.likes++ : comment.likes--
+            likeCountEls[index].textContent = comment.likes
 
             renderComments()
         })
@@ -27,7 +27,7 @@ export const initRepliesComments = () => {
         replyComment.addEventListener('click', () => {
             const indexComment = +replyComment.dataset.commentIndex
             currentCommentToReply = comments[indexComment]
-            userTextComment.value = `> ${currentCommentToReply.author}: "${currentCommentToReply.text}":\n  `
+            userTextComment.value = `> ${currentCommentToReply.author.name}: "${currentCommentToReply.text}":\n  `
             userTextComment.focus()
         })
     }
@@ -66,14 +66,14 @@ export const initAddComments = (renderComments) => {
         )
 
         comments.push({
-            author: cleanedName,
+            author: { name: cleanedName },
             date: formattedDate(),
             text: cleanedText,
-            likesCounter: 0,
-            isLike: false,
+            likes: 0,
+            isLiked: false,
             quote: currentCommentToReply
                 ? {
-                      author: currentCommentToReply.author,
+                      author: currentCommentToReply.author.name,
                       text: currentCommentToReply.text,
                   }
                 : null,
