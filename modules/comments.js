@@ -15,6 +15,6 @@ export let comments = [
     // },
 ]
 
-export const updateComments = (newComments) => {
+export let updateComments = (newComments) => {
     comments = newComments
 }

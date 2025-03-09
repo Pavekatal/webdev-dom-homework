@@ -1,6 +1,7 @@
 import { comments } from './comments.js'
 import { clearingHtml } from './clearingHtml.js'
 import { formattedDate } from './formattedDate.js'
+import { postComments } from './postComments.js'
 
 export const initLikesComments = (renderComments) => {
     const likesButtons = document.querySelectorAll('.like-button')
@@ -38,7 +39,7 @@ export const initAddComments = (renderComments) => {
     const userNameComment = document.querySelector('.add-form-name')
     const userTextComment = document.querySelector('.add-form-text')
 
-    userButtonComment.addEventListener('click', () => {
+    userButtonComment.addEventListener('click', async () => {
         userNameComment.classList.remove('error')
         userTextComment.classList.remove('error')
 
@@ -65,7 +66,7 @@ export const initAddComments = (renderComments) => {
             userTextComment.value.replace(/^\s*>.*(?:\n|$)/gm, '').trim(),
         )
 
-        comments.push({
+        const newComment = {
             author: { name: cleanedName },
             date: formattedDate(),
             text: cleanedText,
@@ -77,9 +78,16 @@ export const initAddComments = (renderComments) => {
                       text: currentCommentToReply.text,
                   }
                 : null,
-        })
+        }
 
-        renderComments()
+        try {
+            await postComments(cleanedName, cleanedText)
+            comments.push(newComment)
+            renderComments()
+        } catch (error) {
+            alert(error.message)
+        }
+
         userNameComment.value = ''
         userTextComment.value = ''
         currentCommentToReply = null
