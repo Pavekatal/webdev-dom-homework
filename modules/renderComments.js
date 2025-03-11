@@ -1,5 +1,6 @@
 import { comments } from './comments.js'
 import { initLikesComments, initRepliesComments } from './initListeners.js'
+import { formatApiDate } from './formattedDate.js'
 
 export const renderComments = () => {
     const otherComments = document.querySelector('.comments')
@@ -11,25 +12,29 @@ export const renderComments = () => {
 
     const commentHTML = comments
         .map((comment, index) => {
-            const likeButtonClass = comment.isLike
+            const likeButtonClass = comment.isLiked
                 ? 'like-button -active-like'
                 : 'like-button'
 
-            const quoteHTML = comment.quote
-                ? `<div class="reply">${comment.quote.author}: "${comment.quote.text}"</div> `
-                : ''
+            const formattedText = comment.text.replace(
+                /<QUOTE>(.*?)<\/QUOTE>/g,
+                (match, p1) => {
+                    return `<div class="reply">${p1}</div>`
+                },
+            )
+            const formatingDate = formatApiDate(comment.date)
 
             return `<li class="comment" data-comment-index="${index}">
         <div class="comment-header">
-          <div>${comment.author}</div>
-          <div>${comment.date}</div>
+          <div>${comment.author.name}</div>
+          <div>${formatingDate}</div>
         </div>
         <div class="comment-body">
-          <div class="comment-text">${quoteHTML}${comment.text}</div>
+          <div class="comment-text">${formattedText}</div>
         </div>
         <div class="comment-footer">
           <div class="likes">
-            <span class="likes-counter">${comment.likesCounter}</span>
+            <span class="likes-counter">${comment.likes}</span>
             <button class="${likeButtonClass}" data-index="${index}"></button>
           </div>
         </div>

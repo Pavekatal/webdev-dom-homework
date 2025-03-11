@@ -1,6 +1,7 @@
 import { comments } from './comments.js'
 import { clearingHtml } from './clearingHtml.js'
 import { formattedDate } from './formattedDate.js'
+import { postComments } from './postComments.js'
 
 export const initLikesComments = (renderComments) => {
     const likesButtons = document.querySelectorAll('.like-button')
@@ -10,9 +11,9 @@ export const initLikesComments = (renderComments) => {
         likeButton.addEventListener('click', (event) => {
             event.stopPropagation()
             const comment = comments[index]
-            comment.isLike = !comment.isLike
-            comment.isLike ? comment.likesCounter++ : comment.likesCounter--
-            likeCountEls[index].textContent = comment.likesCounter
+            comment.isLiked = !comment.isLiked
+            comment.isLiked ? comment.likes++ : comment.likes--
+            likeCountEls[index].textContent = comment.likes
 
             renderComments()
         })
@@ -27,7 +28,11 @@ export const initRepliesComments = () => {
         replyComment.addEventListener('click', () => {
             const indexComment = +replyComment.dataset.commentIndex
             currentCommentToReply = comments[indexComment]
-            userTextComment.value = `> ${currentCommentToReply.author}: "${currentCommentToReply.text}":\n  `
+
+            const author = currentCommentToReply.author || ''
+            const text = currentCommentToReply.text || ''
+
+            userTextComment.value = `<QUOTE>${clearingHtml(author)}: "${clearingHtml(text)}"</QUOTE>\n`
             userTextComment.focus()
         })
     }
@@ -38,7 +43,7 @@ export const initAddComments = (renderComments) => {
     const userNameComment = document.querySelector('.add-form-name')
     const userTextComment = document.querySelector('.add-form-text')
 
-    userButtonComment.addEventListener('click', () => {
+    userButtonComment.addEventListener('click', async () => {
         userNameComment.classList.remove('error')
         userTextComment.classList.remove('error')
 
@@ -61,25 +66,24 @@ export const initAddComments = (renderComments) => {
         }
 
         const cleanedName = clearingHtml(userNameComment.value)
-        const cleanedText = clearingHtml(
-            userTextComment.value.replace(/^\s*>.*(?:\n|$)/gm, '').trim(),
-        )
+        const cleanedText = clearingHtml(userTextComment.value)
 
-        comments.push({
-            author: cleanedName,
+        const newComment = {
+            author: { name: cleanedName },
             date: formattedDate(),
             text: cleanedText,
-            likesCounter: 0,
-            isLike: false,
-            quote: currentCommentToReply
-                ? {
-                      author: currentCommentToReply.author,
-                      text: currentCommentToReply.text,
-                  }
-                : null,
-        })
+            likes: 0,
+            isLiked: false,
+        }
 
-        renderComments()
+        try {
+            await postComments(cleanedName, cleanedText)
+            comments.push(newComment)
+            renderComments()
+        } catch (error) {
+            alert(error.message)
+        }
+
         userNameComment.value = ''
         userTextComment.value = ''
         currentCommentToReply = null

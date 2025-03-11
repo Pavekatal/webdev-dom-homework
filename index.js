@@ -1,5 +1,3 @@
-import { renderComments } from './modules/renderComments.js'
-import { initAddComments } from './modules/initListeners.js'
+import { getComments } from './modules/getComments.js'
 
-renderComments()
-initAddComments(renderComments)
+getComments()

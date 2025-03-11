@@ -1,9 +1,6 @@
 export const clearingHtml = (str) => {
-    return str
-        .replaceAll('<', '')
-        .replaceAll('>', '')
-        .replaceAll('&', '')
-        .replaceAll('"', '')
-        .replaceAll("'", '')
-        .replaceAll('/', '')
+    if (typeof str !== 'string') {
+        return ''
+    }
+    return str.replaceAll('&', '').replaceAll('"', '').replaceAll("'", '')
 }
