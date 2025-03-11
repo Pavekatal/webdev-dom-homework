@@ -28,7 +28,11 @@ export const initRepliesComments = () => {
         replyComment.addEventListener('click', () => {
             const indexComment = +replyComment.dataset.commentIndex
             currentCommentToReply = comments[indexComment]
-            userTextComment.value = `> ${currentCommentToReply.author.name}: "${currentCommentToReply.text}":\n  `
+
+            const author = currentCommentToReply.author || ''
+            const text = currentCommentToReply.text || ''
+
+            userTextComment.value = `<QUOTE>${clearingHtml(author)}: "${clearingHtml(text)}"</QUOTE>\n`
             userTextComment.focus()
         })
     }
@@ -62,9 +66,7 @@ export const initAddComments = (renderComments) => {
         }
 
         const cleanedName = clearingHtml(userNameComment.value)
-        const cleanedText = clearingHtml(
-            userTextComment.value.replace(/^\s*>.*(?:\n|$)/gm, '').trim(),
-        )
+        const cleanedText = clearingHtml(userTextComment.value)
 
         const newComment = {
             author: { name: cleanedName },
@@ -72,12 +74,6 @@ export const initAddComments = (renderComments) => {
             text: cleanedText,
             likes: 0,
             isLiked: false,
-            quote: currentCommentToReply
-                ? {
-                      author: currentCommentToReply.author.name,
-                      text: currentCommentToReply.text,
-                  }
-                : null,
         }
 
         try {

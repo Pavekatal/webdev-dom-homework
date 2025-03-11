@@ -16,9 +16,12 @@ export const renderComments = () => {
                 ? 'like-button -active-like'
                 : 'like-button'
 
-            const quoteHTML = comment.quote
-                ? `<div class="reply">${comment.quote.author}: "${comment.quote.text}"</div> `
-                : ''
+            const formattedText = comment.text.replace(
+                /<QUOTE>(.*?)<\/QUOTE>/g,
+                (match, p1) => {
+                    return `<div class="reply">${p1}</div>`
+                },
+            )
             const formatingDate = formatApiDate(comment.date)
 
             return `<li class="comment" data-comment-index="${index}">
@@ -27,7 +30,7 @@ export const renderComments = () => {
           <div>${formatingDate}</div>
         </div>
         <div class="comment-body">
-          <div class="comment-text">${quoteHTML}${comment.text}</div>
+          <div class="comment-text">${formattedText}</div>
         </div>
         <div class="comment-footer">
           <div class="likes">
