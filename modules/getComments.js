@@ -1,5 +1,6 @@
 import { updateComments } from './comments.js'
 import { renderComments } from './renderComments.js'
+import { initAddComments } from './initListeners.js'
 
 export const getComments = async () => {
     try {
@@ -16,6 +17,7 @@ export const getComments = async () => {
         const data = await response.json()
         updateComments(data.comments)
         renderComments()
+        initAddComments(renderComments)
     } catch (error) {
         console.error('Произошла ошибка:', error)
     }
