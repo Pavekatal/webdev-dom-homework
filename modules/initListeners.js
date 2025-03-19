@@ -2,6 +2,7 @@ import { comments } from './comments.js'
 import { clearingHtml } from './clearingHtml.js'
 import { formattedDate } from './formattedDate.js'
 import { postComments } from './postComments.js'
+import { delay } from './delay.js'
 
 export const initLikesComments = (renderComments) => {
     const likesButtons = document.querySelectorAll('.like-button')
@@ -11,11 +12,18 @@ export const initLikesComments = (renderComments) => {
         likeButton.addEventListener('click', (event) => {
             event.stopPropagation()
             const comment = comments[index]
-            comment.isLiked = !comment.isLiked
-            comment.isLiked ? comment.likes++ : comment.likes--
-            likeCountEls[index].textContent = comment.likes
 
-            renderComments()
+            likeButton.classList.add('-loading-like')
+
+            delay(2000).then(() => {
+                comment.isLiked = !comment.isLiked
+                comment.isLiked ? comment.likes++ : comment.likes--
+                likeCountEls[index].textContent = comment.likes
+
+                likeButton.classList.remove('-loading-like')
+
+                renderComments()
+            })
         })
     })
 }

@@ -5,7 +5,6 @@ import { showLoadingMessage, hideLoadingMessage } from './loadingMessage.js'
 
 export const getComments = () => {
     const loadMessage = showLoadingMessage()
-    loadMessage.style.display = 'block'
 
     return fetch('https://wedev-api.sky.pro/api/v1/Pavekatal/comments')
         .then((response) => {

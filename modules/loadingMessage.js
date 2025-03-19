@@ -20,17 +20,6 @@ export const hideLoadingMessage = (loadingMessage) => {
 }
 
 export const showAddedMessage = () => {
-    // const container = document.querySelector('.container')
-    // const loadingMessage = document.createElement('div')
-    // const addForm = document.querySelector('.add-form')
-
-    // loadingMessage.className = 'loading-message'
-    // loadingMessage.textContent = 'Загрузка...'
-
-    // container.insertBefore(loadingMessage, addForm)
-    // console.log('Элемент загрузки добавлен')
-    // return loadingMessage
-
     const container = document.querySelector('.container')
     const addedMessage = document.createElement('div')
     const addForm = document.querySelector('.add-form')
