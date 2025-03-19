@@ -1,6 +1,5 @@
 import { comments } from './comments.js'
 import { clearingHtml } from './clearingHtml.js'
-import { formattedDate } from './formattedDate.js'
 import { postComments } from './postComments.js'
 import { delay } from './delay.js'
 
@@ -78,7 +77,7 @@ export const initAddComments = (renderComments) => {
 
         const newComment = {
             author: { name: cleanedName },
-            date: formattedDate(),
+            date: Date.now(),
             text: cleanedText,
             likes: 0,
             isLiked: false,
