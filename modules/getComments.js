@@ -23,7 +23,6 @@ export const getComments = () => {
             initAddComments(renderComments)
         })
         .catch((error) => {
-            // loadMessage.style.display = 'none'
             hideLoadingMessage(loadMessage)
             console.error('Произошла ошибка:', error)
         })
