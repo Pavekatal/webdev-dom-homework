@@ -1,6 +1,6 @@
 import { comments } from './comments.js'
 import { initLikesComments, initRepliesComments } from './initListeners.js'
-import { formatApiDate } from './formattedDate.js'
+import { formattedDate } from './formattedDate.js'
 
 export const renderComments = () => {
     const otherComments = document.querySelector('.comments')
@@ -22,7 +22,7 @@ export const renderComments = () => {
                     return `<div class="reply">${p1}</div>`
                 },
             )
-            const formatingDate = formatApiDate(comment.date)
+            const formatingDate = formattedDate(new Date(comment.date))
 
             return `<li class="comment" data-comment-index="${index}">
         <div class="comment-header">
