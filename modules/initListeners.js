@@ -57,16 +57,19 @@ export const initAddComments = (renderComments) => {
         if (userNameComment.value === '' && userTextComment.value === '') {
             userNameComment.classList.add('error')
             userTextComment.classList.add('error')
+            alert('Пожалуйста, заполните все поля и повторите запрос.')
             return
         }
         if (userNameComment.value === '') {
             userNameComment.classList.add('error')
+            alert('Пожалуйста, введите имя и повторите запрос')
             return
         } else {
             userNameComment.classList.remove('error')
         }
         if (userTextComment.value === '') {
             userTextComment.classList.add('error')
+            alert('Пожалуйста, введите комментарий и повторите запрос')
             return
         } else {
             userTextComment.classList.remove('error')
@@ -87,12 +90,12 @@ export const initAddComments = (renderComments) => {
             await postComments(cleanedName, cleanedText)
             comments.push(newComment)
             renderComments()
+            userNameComment.value = ''
+            userTextComment.value = ''
         } catch (error) {
             alert(error.message)
         }
 
-        userNameComment.value = ''
-        userTextComment.value = ''
         currentCommentToReply = null
     })
 }
