@@ -1,15 +1,23 @@
 import { showAddedMessage, hideAddedMessage } from './loadingMessage.js'
 
-export const postComments = (name, text) => {
+export const postComments = (name, text, attempt = 1, messageShow = false) => {
     const addForm = document.querySelector('.add-form')
     addForm.style.display = 'none'
 
-    const addedMessage = showAddedMessage()
+    let addedMessage
+    if (!messageShow) {
+        addedMessage = showAddedMessage()
+        messageShow = true
+    }
 
-    return fetch('https://wedev-api.sky.pro/api/v1/Pavekatal/comments', {
-        method: 'POST',
-        body: JSON.stringify({ name, text, forceError: true }),
-    })
+    const sendComment = () => {
+        return fetch('https://wedev-api.sky.pro/api/v1/Pavekatal/comments', {
+            method: 'POST',
+            body: JSON.stringify({ name, text, forceError: true }),
+        })
+    }
+
+    return sendComment()
         .then((response) => {
             const userNameComment = document.querySelector('.add-form-name')
             const userTextComment = document.querySelector('.add-form-text')
@@ -75,6 +83,11 @@ export const postComments = (name, text) => {
                 throw new Error(
                     'Отсутвует подключение. Возобновите работу сети и повторите запрос',
                 )
+            } else if (error.message === 'Сервер недоступен.' && attempt < 5) {
+                // alert(
+                //     'Похоже, серевер недоступен, пробуем отправить твой запрос',
+                // )
+                return postComments(name, text, attempt + 1, messageShow)
             } else {
                 throw error
             }
