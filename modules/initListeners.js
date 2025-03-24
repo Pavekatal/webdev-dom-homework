@@ -75,19 +75,18 @@ export const initAddComments = (renderComments) => {
             userTextComment.classList.remove('error')
         }
 
-        const cleanedName = clearingHtml(userNameComment.value)
-        const cleanedText = clearingHtml(userTextComment.value)
-
-        const newComment = {
-            author: { name: cleanedName },
-            date: Date.now(),
-            text: cleanedText,
-            likes: 0,
-            isLiked: false,
-        }
+        const cleanedName = clearingHtml(userNameComment.value).trim()
+        const cleanedText = clearingHtml(userTextComment.value).trim()
 
         try {
             await postComments(cleanedName, cleanedText)
+            const newComment = {
+                author: { name: cleanedName },
+                date: Date.now(),
+                text: cleanedText,
+                likes: 0,
+                isLiked: false,
+            }
             comments.push(newComment)
             renderComments()
             userNameComment.value = ''

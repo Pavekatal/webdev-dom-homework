@@ -4,6 +4,9 @@ export const postComments = (name, text, attempt = 1, messageShow = false) => {
     const addForm = document.querySelector('.add-form')
     addForm.style.display = 'none'
 
+    const userNameComment = document.querySelector('.add-form-name')
+    const userTextComment = document.querySelector('.add-form-text')
+
     let addedMessage
     if (!messageShow) {
         addedMessage = showAddedMessage()
@@ -19,53 +22,11 @@ export const postComments = (name, text, attempt = 1, messageShow = false) => {
 
     return sendComment()
         .then((response) => {
-            const userNameComment = document.querySelector('.add-form-name')
-            const userTextComment = document.querySelector('.add-form-text')
-
             if (response.ok) {
                 return response.json()
             } else {
-                if (
-                    userNameComment.value.length < 3 &&
-                    userTextComment.value.length < 3
-                ) {
-                    userNameComment.classList.add('error')
-                    userTextComment.classList.add('error')
-
-                    setTimeout(() => {
-                        userNameComment.classList.remove('error')
-                        userTextComment.classList.remove('error')
-                    }, 3000)
-
-                    throw new Error(
-                        'Имя и текст комментария должны содержать хотя бы 3 символа.',
-                    )
-                }
-
-                if (userNameComment.value.length < 3) {
-                    userNameComment.classList.add('error')
-
-                    setTimeout(() => {
-                        userNameComment.classList.remove('error')
-                    }, 3000)
-
-                    throw new Error('Имя должно содержать хотя бы 3 символа.')
-                }
-
-                if (userTextComment.value.length < 3) {
-                    userTextComment.classList.add('error')
-
-                    setTimeout(() => {
-                        userTextComment.classList.remove('error')
-                    }, 3000)
-
-                    throw new Error(
-                        'Текст комментария должен содержать хотя бы 3 символа.',
-                    )
-                }
-
                 if (response.status === 400) {
-                    throw new Error('Запрос содержит ошибку')
+                    throw new Error('Неверный запрос')
                 }
 
                 if (response.status === 500) {
@@ -88,6 +49,17 @@ export const postComments = (name, text, attempt = 1, messageShow = false) => {
                 //     'Похоже, серевер недоступен, пробуем отправить твой запрос',
                 // )
                 return postComments(name, text, attempt + 1, messageShow)
+            } else if (error.message === 'Неверный запрос') {
+                userNameComment.classList.add('error')
+                userTextComment.classList.add('error')
+
+                setTimeout(() => {
+                    userNameComment.classList.remove('error')
+                    userTextComment.classList.remove('error')
+                }, 3000)
+                throw new Error(
+                    'Имя и текст комментария должны содержать хотя бы 3 символа.',
+                )
             } else {
                 throw error
             }
