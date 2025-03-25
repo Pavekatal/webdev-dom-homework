@@ -1,4 +1,4 @@
-import { comments } from './comments.js'
+import { comments, updateComments } from './comments.js'
 import { clearingHtml } from './clearingHtml.js'
 import { postComments } from './postComments.js'
 import { delay } from './delay.js'
@@ -78,22 +78,42 @@ export const initAddComments = (renderComments) => {
         const cleanedName = clearingHtml(userNameComment.value).trim()
         const cleanedText = clearingHtml(userTextComment.value).trim()
 
-        try {
-            await postComments(cleanedName, cleanedText)
-            const newComment = {
-                author: { name: cleanedName },
-                date: Date.now(),
-                text: cleanedText,
-                likes: 0,
-                isLiked: false,
-            }
-            comments.push(newComment)
-            renderComments()
-            userNameComment.value = ''
-            userTextComment.value = ''
-        } catch (error) {
-            alert(error.message)
-        }
+        document.querySelector('.loading-message').style.display = 'block'
+        document.querySelector('.add-form').style.display = 'none'
+        console.log('Элемент post добавлен')
+
+        postComments(cleanedName, cleanedText)
+            .then((data) => {
+                document.querySelector('.loading-message').style.display =
+                    'none'
+                document.querySelector('.add-form').style.display = 'flex'
+                console.log('Элемент post удален')
+
+                updateComments(data)
+                renderComments()
+                userNameComment.value = ''
+                userTextComment.value = ''
+            })
+            .catch((error) => {
+                if (error.message === 'Failed to fetch') {
+                    alert(
+                        'Отсутвует подключение. Возобновите работу сети и повторите запрос',
+                    )
+                }
+
+                if (error.message === 'Неверный запрос') {
+                    alert(
+                        'Имя и текст комментария должны содержать хотя бы 3 символа.',
+                    )
+                    userNameComment.classList.add('error')
+                    userTextComment.classList.add('error')
+
+                    setTimeout(() => {
+                        userNameComment.classList.remove('error')
+                        userTextComment.classList.remove('error')
+                    }, 2000)
+                }
+            })
 
         currentCommentToReply = null
     })
