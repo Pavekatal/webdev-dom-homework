@@ -26,7 +26,7 @@ export const renderComments = () => {
 
             return `<li class="comment" data-comment-index="${index}">
         <div class="comment-header">
-          <div>${comment.author.name}</div>
+          <div>${comment.name}</div>
           <div>${formatingDate}</div>
         </div>
         <div class="comment-body">

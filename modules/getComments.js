@@ -1,11 +1,4 @@
-import { updateComments } from './comments.js'
-import { renderComments } from './renderComments.js'
-import { initAddComments } from './initListeners.js'
-import { showLoadingMessage, hideLoadingMessage } from './loadingMessage.js'
-
 export const getComments = () => {
-    const loadMessage = showLoadingMessage()
-
     return fetch('https://wedev-api.sky.pro/api/v1/Pavekatal/comments')
         .then((response) => {
             if (!response.ok) {
@@ -15,14 +8,19 @@ export const getComments = () => {
             }
             return response.json()
         })
-        .then((data) => {
-            hideLoadingMessage(loadMessage)
-            updateComments(data.comments)
-            renderComments()
-            initAddComments(renderComments)
+        .then((responseData) => {
+            const appComments = responseData.comments.map((comment) => {
+                return {
+                    name: comment.author.name,
+                    date: new Date(comment.date),
+                    text: comment.text,
+                    likes: comment.likes,
+                    isLiked: false,
+                }
+            })
+            return appComments
         })
         .catch((error) => {
-            hideLoadingMessage(loadMessage)
             console.error('Произошла ошибка:', error)
         })
 }

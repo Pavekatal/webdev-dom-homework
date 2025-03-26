@@ -1,32 +1,47 @@
-import { showAddedMessage, hideAddedMessage } from './loadingMessage.js'
+import { getComments } from './getComments.js'
 
-export const postComments = (name, text) => {
+export const postComments = (name, text, attempt = 1) => {
     const addForm = document.querySelector('.add-form')
     addForm.style.display = 'none'
 
-    const addedMessage = showAddedMessage()
-
-    return fetch('https://wedev-api.sky.pro/api/v1/Pavekatal/comments', {
-        method: 'POST',
-        body: JSON.stringify({ name, text }),
-    })
-        .then((response) => {
-            if (!response.ok) {
-                return response.json().then((errorData) => {
-                    throw new Error(errorData.error)
-                })
-            }
-            return response.json()
+    const sendComment = () => {
+        return fetch('https://wedev-api.sky.pro/api/v1/Pavekatal/comments', {
+            method: 'POST',
+            body: JSON.stringify({ name, text, forceError: true }),
         })
-        .then((result) => {
-            hideAddedMessage(addedMessage)
-            addForm.style.display = 'flex'
-            return result
+    }
+
+    return sendComment()
+        .then((response) => {
+            if (response.ok) {
+                return response.json()
+            } else {
+                if (response.status === 500) {
+                    throw new Error('Сервер недоступен.')
+                }
+
+                if (response.status === 400) {
+                    throw new Error('Неверный запрос')
+                }
+
+                throw new Error('Что-то пошло не так...')
+            }
+        })
+        .then(() => {
+            return getComments()
         })
         .catch((error) => {
-            hideAddedMessage(addedMessage)
+            if (error.message === 'Сервер недоступен.' && attempt < 5) {
+                // alert(
+                //     'Похоже, серевер недоступен, пробуем отправить твой запрос',
+                // )
+                return postComments(name, text, attempt + 1)
+            } else {
+                throw error
+            }
+        })
+        .finally(() => {
+            document.querySelector('.loading-message').style.display = 'none'
             addForm.style.display = 'flex'
-            console.error('Ошибка при отправке комментария', error)
-            throw error
         })
 }

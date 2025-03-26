@@ -1,4 +1,4 @@
-import { comments } from './comments.js'
+import { comments, updateComments } from './comments.js'
 import { clearingHtml } from './clearingHtml.js'
 import { postComments } from './postComments.js'
 import { delay } from './delay.js'
@@ -57,42 +57,64 @@ export const initAddComments = (renderComments) => {
         if (userNameComment.value === '' && userTextComment.value === '') {
             userNameComment.classList.add('error')
             userTextComment.classList.add('error')
+            alert('Пожалуйста, заполните все поля и повторите запрос.')
             return
         }
         if (userNameComment.value === '') {
             userNameComment.classList.add('error')
+            alert('Пожалуйста, введите имя и повторите запрос')
             return
         } else {
             userNameComment.classList.remove('error')
         }
         if (userTextComment.value === '') {
             userTextComment.classList.add('error')
+            alert('Пожалуйста, введите комментарий и повторите запрос')
             return
         } else {
             userTextComment.classList.remove('error')
         }
 
-        const cleanedName = clearingHtml(userNameComment.value)
-        const cleanedText = clearingHtml(userTextComment.value)
+        const cleanedName = clearingHtml(userNameComment.value).trim()
+        const cleanedText = clearingHtml(userTextComment.value).trim()
 
-        const newComment = {
-            author: { name: cleanedName },
-            date: Date.now(),
-            text: cleanedText,
-            likes: 0,
-            isLiked: false,
-        }
+        document.querySelector('.loading-message').style.display = 'block'
+        document.querySelector('.add-form').style.display = 'none'
+        console.log('Элемент post добавлен')
 
-        try {
-            await postComments(cleanedName, cleanedText)
-            comments.push(newComment)
-            renderComments()
-        } catch (error) {
-            alert(error.message)
-        }
+        postComments(cleanedName, cleanedText)
+            .then((data) => {
+                document.querySelector('.loading-message').style.display =
+                    'none'
+                document.querySelector('.add-form').style.display = 'flex'
+                console.log('Элемент post удален')
 
-        userNameComment.value = ''
-        userTextComment.value = ''
+                updateComments(data)
+                renderComments()
+                userNameComment.value = ''
+                userTextComment.value = ''
+            })
+            .catch((error) => {
+                if (error.message === 'Failed to fetch') {
+                    alert(
+                        'Отсутвует подключение. Возобновите работу сети и повторите запрос',
+                    )
+                }
+
+                if (error.message === 'Неверный запрос') {
+                    alert(
+                        'Имя и текст комментария должны содержать хотя бы 3 символа.',
+                    )
+                    userNameComment.classList.add('error')
+                    userTextComment.classList.add('error')
+
+                    setTimeout(() => {
+                        userNameComment.classList.remove('error')
+                        userTextComment.classList.remove('error')
+                    }, 2000)
+                }
+            })
+
         currentCommentToReply = null
     })
 }
