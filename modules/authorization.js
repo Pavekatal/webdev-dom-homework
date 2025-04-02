@@ -19,9 +19,9 @@ export const login = (login, password) => {
     })
 }
 
-export const registration = (login, name, password) => {
+export const registration = (name, login, password) => {
     return fetch(authToken, {
         method: 'POST',
-        body: JSON.stringify({ login: login, name: name, password: password }),
+        body: JSON.stringify({ name: name, login: login, password: password }),
     })
 }

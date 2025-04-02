@@ -1,33 +1,35 @@
-import { login, updateToken, updateName } from './authorization.js'
+import { registration, updateToken, updateName } from './authorization.js'
 import { fetchAndRenderComments } from '../index.js'
-import { renderReg } from './renderReg.js'
+import { renderLogin } from './renderLogin.js'
 
-export const renderLogin = () => {
+export const renderReg = () => {
     const containerComments = document.querySelector('.container')
 
     const loginHTML = `
     <div class="add-form">
-            <h1>Форма авторизации</h1>
+            <h1>Форма регистрации</h1>
+             <input type="text" class="add-form-name" placeholder="Введите имя" id="name" required>
             <input type="text" class="add-form-name" placeholder="Введите логин" id="login" required>
             <input type="password" class="add-form-name" placeholder="Введите пароль" id="password" required>
             <fieldset class="add-form-registry">
-                <button class="add-form-button-main button-main" type="submit" id="auth-button">Войти</button>
-                <u class="add-form-button-link registry">Зарегистрироваться</u>
+                <button class="add-form-button-main button-main" type="submit" id="reg-button">Зарегистрироваться</button>
+                <u class="add-form-button-link entry">Войти</u>
             </fieldset>
         </div>
     `
     containerComments.innerHTML = loginHTML
 
-    document.querySelector('.registry').addEventListener('click', () => {
-        renderReg()
+    document.querySelector('.entry').addEventListener('click', () => {
+        renderLogin()
     })
 
-    const authButton = document.getElementById('auth-button')
+    const regButton = document.getElementById('reg-button')
+    const nameUser = document.getElementById('name')
     const loginUser = document.getElementById('login')
     const passwordUser = document.getElementById('password')
 
-    authButton.addEventListener('click', () => {
-        login(loginUser.value, passwordUser.value)
+    regButton.addEventListener('click', () => {
+        registration(nameUser.value, loginUser.value, passwordUser.value)
             .then((response) => {
                 return response.json()
             })
