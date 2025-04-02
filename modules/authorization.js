@@ -6,6 +6,12 @@ export const updateToken = (newToken) => {
     token = newToken
 }
 
+export let userName = ''
+
+export const updateName = (newName) => {
+    userName = newName
+}
+
 export const login = (login, password) => {
     return fetch(`${authToken}/login`, {
         method: 'POST',

@@ -1,6 +1,12 @@
 import { comments } from './comments.js'
-import { initLikesComments, initRepliesComments } from './initListeners.js'
+import {
+    initLikesComments,
+    initRepliesComments,
+    initAddComments,
+} from './initListeners.js'
 import { formattedDate } from './formattedDate.js'
+import { renderLogin } from './renderLogin.js'
+import { token, userName } from './authorization.js'
 
 export const renderComments = () => {
     // const otherComments = document.querySelector('.comments')
@@ -49,7 +55,7 @@ export const renderComments = () => {
                 <input
                     type="text"
                     class="add-form-name"
-                    placeholder="Введите ваше имя"
+                    placeholder="Введите ваше имя" readonly value="${userName}"
                 />
                 <textarea
                     type="textarea"
@@ -65,15 +71,23 @@ export const renderComments = () => {
                 Добавление комментария...
             </div>`
 
-    const authMessage = `<div class="auth-message">Чтобы отправить комментарий, необходимо <a class="auth-link" href="#">войти</a></div>`
+    const authMessage = `<div class="auth-message">Чтобы отправить комментарий, необходимо <u class="auth-link">войти</u></div>`
 
     const startHTML = `
     <ul class="comments">${commentHTML}</ul>
-    ${authMessage}
+    ${token ? addFormCommentsHTML : authMessage}
     `
     containerComments.innerHTML = startHTML
 
+    if (token) {
+        initLikesComments(renderComments)
+        initRepliesComments()
+        initAddComments(renderComments)
+    } else {
+        document.querySelector('.auth-link').addEventListener('click', () => {
+            renderLogin()
+        })
+    }
+
     // otherComments.innerHTML = commentHTML
-    initLikesComments(renderComments)
-    initRepliesComments()
 }

@@ -111,16 +111,16 @@ body {
 }
 
 .add-form-name {
-    width: 300px;
+    width: 500px;
     padding: 11px 22px;
-    /* margin-bottom: 12px; */
+    margin-bottom: 12px;
 }
 
-/* .add-form-name:read-only {
+.add-form-name:read-only {
     background-color: #d2ddd2;
     color: #363636;
     font-weight: bold;
-} */
+}
 
 .add-form-text {
     margin-top: 12px;
@@ -128,13 +128,13 @@ body {
     resize: none;
 }
 
-/* .add-form-registry {
+.add-form-registry {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
     border: none;
     padding-left: 0;
-} */
+}
 
 .add-form-row {
     display: flex;
@@ -151,7 +151,7 @@ body {
     cursor: pointer;
 }
 
-/* .add-form-button-main {
+.add-form-button-main {
     width: 100%;
     margin-top: 24px;
     font-size: 24px;
@@ -160,15 +160,15 @@ body {
     border: none;
     border-radius: 18px;
     cursor: pointer;
-} */
+}
 
-/* .add-form-button-link {
+.add-form-button-link {
     text-align: center;
     padding-top: 22px;
     color: #ffffff;
     cursor: pointer;
     border-bottom: inherit;
-} */
+}
 
 /* .add-form-button-exit {
     width: 50px;
@@ -230,5 +230,5 @@ body {
 }
 
 .auth-link {
-    color: #ffffff;
+    cursor: pointer;
 }
