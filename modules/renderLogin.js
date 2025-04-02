@@ -1,5 +1,5 @@
 import { login, updateToken, updateName } from './authorization.js'
-import { fetchAndRenderComments } from '../index.js'
+import { getAndRenderComments } from '../index.js'
 import { renderReg } from './renderReg.js'
 
 export const renderLogin = () => {
@@ -28,13 +28,24 @@ export const renderLogin = () => {
 
     authButton.addEventListener('click', () => {
         login(loginUser.value, passwordUser.value)
-            .then((response) => {
-                return response.json()
-            })
             .then((data) => {
                 updateToken(data.user.token)
                 updateName(data.user.name)
-                fetchAndRenderComments()
+                getAndRenderComments()
+            })
+            .catch((error) => {
+                if (error.message === 'Неверный логин или пароль') {
+                    alert(
+                        'Неверный логин или пароль. Пожалуйста, исправьте данные и повторите вход',
+                    )
+                    loginUser.classList.add('error')
+                    passwordUser.classList.add('error')
+
+                    setTimeout(() => {
+                        loginUser.classList.remove('error')
+                        passwordUser.classList.remove('error')
+                    }, 2000)
+                }
             })
     })
 }

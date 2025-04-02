@@ -1,5 +1,5 @@
 import { registration, updateToken, updateName } from './authorization.js'
-import { fetchAndRenderComments } from '../index.js'
+import { getAndRenderComments } from '../index.js'
 import { renderLogin } from './renderLogin.js'
 
 export const renderReg = () => {
@@ -30,13 +30,29 @@ export const renderReg = () => {
 
     regButton.addEventListener('click', () => {
         registration(nameUser.value, loginUser.value, passwordUser.value)
-            .then((response) => {
-                return response.json()
-            })
             .then((data) => {
                 updateToken(data.user.token)
                 updateName(data.user.name)
-                fetchAndRenderComments()
+                getAndRenderComments()
+            })
+            .catch((error) => {
+                if (
+                    error.message ===
+                    'Пользователь с таким логином уже существует'
+                ) {
+                    alert(
+                        'Пользователь с таким логином уже существует. Пожалуйста, придумайте другой логин',
+                    )
+                    loginUser.classList.add('error')
+                    nameUser.classList.add('error')
+                    passwordUser.classList.add('error')
+
+                    setTimeout(() => {
+                        loginUser.classList.remove('error')
+                        nameUser.classList.remove('error')
+                        passwordUser.classList.remove('error')
+                    }, 2000)
+                }
             })
     })
 }
