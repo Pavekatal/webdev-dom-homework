@@ -1,12 +1,22 @@
+// import { getAndRenderComments } from '../index.js'
+import { renderLogin } from './renderLogin.js'
+
 const authToken = 'https://wedev-api.sky.pro/api/user'
 
-export let token = ''
+export let token = localStorage.getItem('authUserToken') || ''
 
 export const updateToken = (newToken) => {
     token = newToken
 }
 
 export let userName = ''
+
+const authUserData = localStorage.getItem('userData')
+
+if (authUserData) {
+    let authUserName = JSON.parse(authUserData).name
+    userName = authUserName
+}
 
 export const updateName = (newName) => {
     userName = newName
@@ -44,4 +54,11 @@ export const registration = (name, login, password) => {
             throw new Error('Что-то пошло не так...')
         }
     })
+}
+
+export const logout = () => {
+    localStorage.removeItem('authUserToken')
+    localStorage.removeItem('userData')
+
+    renderLogin()
 }

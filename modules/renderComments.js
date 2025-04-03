@@ -3,6 +3,7 @@ import {
     initLikesComments,
     initRepliesComments,
     initAddComments,
+    initLogout,
 } from './initListeners.js'
 import { formattedDate } from './formattedDate.js'
 import { renderLogin } from './renderLogin.js'
@@ -64,6 +65,7 @@ export const renderComments = () => {
                     rows="4"
                 ></textarea>
                 <div class="add-form-row">
+                    <div class="out-message"><u class="out-link">выйти</u></div>
                     <button class="add-form-button">Написать</button>
                 </div>
             </div>
@@ -83,6 +85,7 @@ export const renderComments = () => {
         initLikesComments(renderComments)
         initRepliesComments()
         initAddComments(renderComments)
+        initLogout()
     } else {
         document.querySelector('.auth-link').addEventListener('click', () => {
             renderLogin()

@@ -138,7 +138,9 @@ body {
 
 .add-form-row {
     display: flex;
-    justify-content: flex-end;
+    /* justify-content: flex-end; */
+    justify-content: space-between;
+    align-items: center;
 }
 
 .add-form-button {
@@ -230,5 +232,13 @@ body {
 }
 
 .auth-link {
+    cursor: pointer;
+}
+
+.out-message {
+    padding-top: 15px;
+}
+
+.out-link {
     cursor: pointer;
 }

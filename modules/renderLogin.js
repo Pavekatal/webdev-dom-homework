@@ -31,6 +31,8 @@ export const renderLogin = () => {
             .then((data) => {
                 updateToken(data.user.token)
                 updateName(data.user.name)
+                localStorage.setItem('authUserToken', data.user.token)
+                localStorage.setItem('userData', JSON.stringify(data.user))
                 getAndRenderComments()
             })
             .catch((error) => {
