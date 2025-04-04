@@ -2,6 +2,7 @@ import { comments, updateComments } from './comments.js'
 import { clearingHtml } from './clearingHtml.js'
 import { postComments } from './postComments.js'
 import { delay } from './delay.js'
+import { logout } from './authorization.js'
 
 export const initLikesComments = (renderComments) => {
     const likesButtons = document.querySelectorAll('.like-button')
@@ -116,5 +117,11 @@ export const initAddComments = (renderComments) => {
             })
 
         currentCommentToReply = null
+    })
+}
+
+export const initLogout = () => {
+    document.querySelector('.out-link').addEventListener('click', () => {
+        logout()
     })
 }

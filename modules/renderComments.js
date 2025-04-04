@@ -1,14 +1,23 @@
 import { comments } from './comments.js'
-import { initLikesComments, initRepliesComments } from './initListeners.js'
+import {
+    initLikesComments,
+    initRepliesComments,
+    initAddComments,
+    initLogout,
+} from './initListeners.js'
 import { formattedDate } from './formattedDate.js'
+import { renderLogin } from './renderLogin.js'
+import { token, userName } from './authorization.js'
 
 export const renderComments = () => {
-    const otherComments = document.querySelector('.comments')
-    const commentsContainer = document.createElement('div')
-    commentsContainer.id = 'commentsContainer'
-    otherComments.appendChild(commentsContainer)
+    // const otherComments = document.querySelector('.comments')
+    // const commentsContainer = document.createElement('div')
+    // commentsContainer.id = 'commentsContainer'
+    // otherComments.appendChild(commentsContainer)
 
-    commentsContainer.innerHTML = ''
+    // commentsContainer.innerHTML = ''
+
+    const containerComments = document.querySelector('.container')
 
     const commentHTML = comments
         .map((comment, index) => {
@@ -42,7 +51,46 @@ export const renderComments = () => {
         })
         .join('')
 
-    otherComments.innerHTML = commentHTML
-    initLikesComments(renderComments)
-    initRepliesComments()
+    const addFormCommentsHTML = `
+            <div class="add-form">
+                <input
+                    type="text"
+                    class="add-form-name"
+                    placeholder="Введите ваше имя" readonly value="${userName}"
+                />
+                <textarea
+                    type="textarea"
+                    class="add-form-text"
+                    placeholder="Введите ваш коментарий"
+                    rows="4"
+                ></textarea>
+                <div class="add-form-row">
+                    <div class="out-message"><u class="out-link">выйти</u></div>
+                    <button class="add-form-button">Написать</button>
+                </div>
+            </div>
+            <div class="loading-message" style="display: none">
+                Добавление комментария...
+            </div>`
+
+    const authMessage = `<div class="auth-message">Чтобы отправить комментарий, необходимо <u class="auth-link">войти</u></div>`
+
+    const startHTML = `
+    <ul class="comments">${commentHTML}</ul>
+    ${token ? addFormCommentsHTML : authMessage}
+    `
+    containerComments.innerHTML = startHTML
+
+    if (token) {
+        initLikesComments(renderComments)
+        initRepliesComments()
+        initAddComments(renderComments)
+        initLogout()
+    } else {
+        document.querySelector('.auth-link').addEventListener('click', () => {
+            renderLogin()
+        })
+    }
+
+    // otherComments.innerHTML = commentHTML
 }

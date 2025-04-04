@@ -1,13 +1,15 @@
 import { getComments } from './modules/getComments.js'
 import { updateComments } from './modules/comments.js'
 import { renderComments } from './modules/renderComments.js'
-import { initAddComments } from './modules/initListeners.js'
 
-document.querySelector('.comments').innerHTML = 'Загрузка...'
+export const getAndRenderComments = () => {
+    document.querySelector('.container').innerHTML =
+        `<div>Загрузка комментариев...</div>`
 
-getComments().then((data) => {
-    updateComments(data)
-    renderComments()
-})
+    getComments().then((data) => {
+        updateComments(data)
+        renderComments()
+    })
+}
 
-initAddComments(renderComments)
+getAndRenderComments()

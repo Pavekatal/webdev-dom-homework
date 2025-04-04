@@ -1,5 +1,5 @@
 export const getComments = () => {
-    return fetch('https://wedev-api.sky.pro/api/v1/Pavekatal/comments')
+    return fetch('https://wedev-api.sky.pro/api/v2/Pavekatal/comments')
         .then((response) => {
             if (!response.ok) {
                 throw new Error(
